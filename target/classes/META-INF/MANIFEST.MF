@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1510615584024
+Build-Jdk: 1.8.0_60
+Built-By: lrodriguez
+Bundle-Description: Empty Camel Spring Example
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.html
+Bundle-ManifestVersion: 2
+Bundle-Name: Empty Camel Spring Example [ProyectoIntegracion]
+Bundle-SymbolicName: ProyectoIntegracion
+Bundle-Version: 1.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Import-Package: org.apache.activemq.camel.component;version="[5.10,6)"
+Tool: Bnd-3.2.0.201605172007

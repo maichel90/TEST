@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://www.rapid.com.co/RapidServices/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="RapidServices"
+	targetNamespace="http://www.rapid.com.co/RapidServices/">
+
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.rapid.com.co/RapidServices/">
+			<xsd:complexType name="Item">
+				<xsd:sequence>
+					<xsd:element name="iditem" type="xsd:long" nillable="true" />
+					<xsd:element name="cantidad" type="xsd:long" />
+					<xsd:element name="idproducto" type="xsd:long" />
+					<xsd:element name="nombreproducto" type="xsd:string" />
+					<xsd:element name="valortotal" type="xsd:long" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="Quote">
+				<xsd:sequence>
+					<xsd:element name="supplierPrice" type="xsd:string"
+						nillable="true" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="orderQouteRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="orderId" type="xsd:string"
+							nillable="true" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="orderQouteResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="result" type="xsd:boolean" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="processQuoteRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="orderId" type="xsd:string"
+							nillable="true" />
+						<xsd:element name="items" type="tns:Item" nillable="true"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="processQuoteResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="result" type="xsd:string" nillable="true" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="quoteProductsRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="orderId" type="xsd:string"
+							nillable="true" />
+						<xsd:element name="items" type="tns:Item" nillable="true"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="quoteProductsResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="result" type="xsd:string" nillable="true" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="OrderQouteRequest">
+		<wsdl:part element="tns:orderQouteRequest" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="OrderQouteResponse">
+		<wsdl:part element="tns:orderQouteResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="processQouteRequest">
+		<wsdl:part element="tns:processQuoteRequest" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="processQouteResponse">
+		<wsdl:part element="tns:processQuoteResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="quoteProductsRequest">
+		<wsdl:part element="tns:quoteProductsRequest" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="quoteProductsResponse">
+		<wsdl:part element="tns:quoteProductsResponse" name="parameters" />
+	</wsdl:message>
+
+	<wsdl:portType name="RapidServicesPort">
+		<wsdl:operation name="orderQoute">
+			<wsdl:input message="tns:OrderQouteRequest" />
+			<wsdl:output message="tns:OrderQouteResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="processQoute">
+			<wsdl:input message="tns:processQouteRequest" />
+			<wsdl:output message="tns:processQouteResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="quoteProducts">
+			<wsdl:input message="tns:quoteProductsRequest" />
+			<wsdl:output message="tns:quoteProductsResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="OrderQouteBinding" type="tns:RapidServicesPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="orderQoute">
+			<soap:operation soapAction="http://www.rapid.com.co/RapidServices/orderQoute" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="processQoute">
+			<soap:operation soapAction="http://www.rapid.com.co/RapidServices/processQoute" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="quoteProducts">
+			<soap:operation soapAction="http://www.rapid.com.co/RapidServices/quoteProducts" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="RapidServices">
+		<wsdl:port binding="tns:OrderQouteBinding" name="RapidServicesPort">
+			<soap:address location="http://localhost:8080/RapidServices" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://www.kallsonys.com.co/ProveedorService/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ProveedorService"
+	targetNamespace="http://www.kallsonys.com.co/ProveedorService/">
+
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.kallsonys.com.co/ProveedorService/">
+
+			<xsd:complexType name="Item">
+				<xsd:sequence>
+					<xsd:element name="iditem" type="xsd:long" nillable="true" />
+					<xsd:element name="cantidad" type="xsd:long" />
+					<xsd:element name="idproducto" type="xsd:long" />
+					<xsd:element name="nombreproducto" type="xsd:string" />
+					<xsd:element name="valortotal" type="xsd:long" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="Quote">
+				<xsd:sequence>
+					<xsd:element name="supplierPrice" type="xsd:string"
+						nillable="true" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="quoteServiceProcessRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="orderId" type="xsd:string"
+							nillable="true" />
+						<xsd:element name="items" type="tns:Item" nillable="true"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="quoteServiceProcessResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="result" type="xsd:string" nillable="true" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="orderQuouteElement">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="orderId" type="xsd:string" nillable="true" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="orderQuouteResponseElement">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="result" type="xsd:boolean" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="quoteProductsRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="orderId" type="xsd:string"
+							nillable="true" />
+						<xsd:element name="items" type="tns:Item" nillable="true"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="quoteProductsResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="result" type="xsd:string" nillable="true" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="QuoteServiceRequestMessage">
+		<wsdl:part name="payload" element="tns:quoteServiceProcessRequest" />
+	</wsdl:message>
+	<wsdl:message name="QuoteServiceResponseMessage">
+		<wsdl:part name="payload" element="tns:quoteServiceProcessResponse" />
+	</wsdl:message>
+	<wsdl:message name="OrderService_orderQuoute">
+		<wsdl:part name="parameters" element="tns:orderQuouteElement" />
+	</wsdl:message>
+	<wsdl:message name="OrderService_orderQuouteResponse">
+		<wsdl:part name="parameters" element="tns:orderQuouteResponseElement" />
+	</wsdl:message>
+		<wsdl:message name="QuoteProductsRequest">
+		<wsdl:part element="tns:quoteProductsRequest" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="QuoteProductsResponse">
+		<wsdl:part element="tns:quoteProductsResponse" name="parameters" />
+	</wsdl:message>
+
+	<wsdl:portType name="QuoteServicePort">
+		<wsdl:operation name="orderQuoute">
+			<wsdl:input message="tns:QuoteServiceRequestMessage" />
+			<wsdl:output message="tns:QuoteServiceResponseMessage" />
+		</wsdl:operation>
+
+		<wsdl:operation name="validateOrderQuoute">
+			<wsdl:input message="tns:OrderService_orderQuoute" />
+			<wsdl:output message="tns:OrderService_orderQuouteResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="quoteProducts">
+			<wsdl:input message="tns:QuoteProductsRequest" />
+			<wsdl:output message="tns:QuoteProductsResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="QuoteServiceBinding" type="tns:QuoteServicePort">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="orderQuoute">
+			<soap:operation soapAction="urn:orderQuoute" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="validateOrderQuoute">
+			<soap:operation soapAction="http://www.kallsonys.com.co/ProveedorService/validateOrderQuoute" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="quoteProducts">
+			<soap:operation soapAction="http://www.kallsonys.com.co/ProveedorService/quoteProducts" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="KallsonysQuoteService">
+		<wsdl:documentation>Kallsonys Proveedor Service</wsdl:documentation>
+		<wsdl:port name="QuoteServicePort" binding="tns:QuoteServiceBinding">
+			<soap:address location="http://www.kallsonys.com.co/ProveedorService/" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

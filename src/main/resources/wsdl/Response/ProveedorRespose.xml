@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kal="http://kallSonys.pica.com.co">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <kal:mensajeSalida>
+         <resultado>?</resultado>
+      </kal:mensajeSalida>
+   </soapenv:Body>
+</soapenv:Envelope>

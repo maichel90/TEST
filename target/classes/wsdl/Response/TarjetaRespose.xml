@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tar="http://www.kallsonys.com.co/TarjetaServices/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tar:CreditCardValidationResponse>
+         <valid>CAMBIAR</valid>
+      </tar:CreditCardValidationResponse>
+   </soapenv:Body>
+</soapenv:Envelope>

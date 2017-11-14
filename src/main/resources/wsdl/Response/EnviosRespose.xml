@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:env="http://www.kallsonys.com.co/EnvioServices/">
+	<soapenv:Header />
+	<soapenv:Body>
+		<env:fullfillShipmentResponse>
+			<fullfillShipmentResult>CAMBIAR</fullfillShipmentResult>
+		</env:fullfillShipmentResponse>
+	</soapenv:Body>
+</soapenv:Envelope>

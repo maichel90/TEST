@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- JBoss, Home of Professional Open Source Copyright 2014, Red Hat, Inc. 
+	and/or its affiliates, and individual contributors by the @authors tag. See 
+	the copyright.txt in the distribution for a full listing of individual contributors. 
+	Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+	use this file except in compliance with the License. You may obtain a copy 
+	of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<!-- Configures the Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd             http://camel.apache.org/schema/cxf       http://camel.apache.org/schema/cxf/camel-cxf.xsd      http://camel.apache.org/schema/spring      http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<!-- <cxf:cxfEndpoint address="http://localhost:9000/BusServices/Contabilidad" -->
+	<!-- endpointName="s:OrdenBinding" id="servicioRecepcionOrdenes" -->
+	<!-- serviceName="s:OrdenEndpointService" wsdlURL="wsdl/RecepcionOrdenes.wsdl" -->
+	<!-- xmlns:s="http://kallSonys.pica.com.co" /> -->
+	<cxf:cxfEndpoint address="http://localhost:9000/BusServices/Proveedores"
+		endpointName="s:QuoteServicePort" id="servicioProveedoresOrdenes"
+		serviceName="s:KallsonysQuoteService" wsdlURL="wsdl/Kallsonys/ProveedorService.wsdl"
+		xmlns:s="http://www.kallsonys.com.co/ProveedorService/" />
+	<cxf:cxfEndpoint address="http://localhost:9001/BusServices/Envios"
+		endpointName="s:EnvioServicesPort" id="servicioEnvioOrdenes"
+		serviceName="s:KallsonysEnvioServices" wsdlURL="wsdl/Kallsonys/EnvioService.wsdl"
+		xmlns:s="http://www.kallsonys.com.co/EnvioServices/" />
+	<cxf:cxfEndpoint address="http://localhost:9002/BusServices/Verificacion"
+		endpointName="s:ValidateCreditCardPort" id="servicioVerificacionTarjeta"
+		serviceName="s:ValidateCreditCardService" wsdlURL="wsdl/Kallsonys/TarjetaServices.wsdl"
+		xmlns:s="http://www.kallsonys.com.co/TarjetaServices/" />
+	<cxf:cxfEndpoint address="http://localhost:9002/BusServices/Pagos"
+		endpointName="s:ValidateCreditCardPort" id="servicioPagosTarjeta"
+		serviceName="s:ValidateCreditCardService" wsdlURL="wsdl/Kallsonys/TarjetaServices.wsdl"
+		xmlns:s="http://www.kallsonys.com.co/TarjetaServices/" />
+	<!-- .......................PROVEEDORES.................. -->
+	<cxf:cxfEndpoint address="http://localhost:8088/MockupsAliados/DhlServiceBean"
+		endpointName="c:DHLServicesPort" id="ProveedorDHL" serviceName="c:DHLServices"
+		wsdlURL="wsdl/Proveedores/DHLServices.wsdl" xmlns:c="http://www.dhl.com.co/DhlServices/" />
+	<cxf:cxfEndpoint
+		address="http://localhost:8088/ValidateCC/ValidateCreditCardService"
+		endpointName="c:ValidateCreditCardPort" id="ProveedorValidacionTarjeta"
+		serviceName="c:ValidateCreditCardService" wsdlURL="wsdl/Proveedores/ValidacionTarjeta.wsdl"
+		xmlns:c="http://www.validartarjeta.com.co/ValidadorTarjeta/" />
+		
+	<cxf:cxfEndpoint
+		address="http://localhost:8088/SonyApp/SonyQuoteService"
+		endpointName="c:SonyQuoteServicePort" id="ProveedorSonyService"
+		serviceName="c:SonyQuoteService" wsdlURL="wsdl/Proveedores/SonyService.wsdl"
+		xmlns:c="http://sony.com.co/SonyService/" />
+	<cxf:cxfEndpoint
+		address="http://localhost:8088/RapidServices"
+		endpointName="c:RapidServicesPort" id="ProveedorRapidServices"
+		serviceName="c:RapidServices" wsdlURL="wsdl/Proveedores/ValidacionTarjeta.wsdl"
+		xmlns:c="http://www.rapid.com.co/RapidServices/" />
+
+	<cxf:rsClient
+		address="http://18.216.206.85:8080/MockupsAliados/api/servientrega"
+		id="rsServientrega" loggingFeatureEnabled="true" />
+	<!-- <bean class="org.apache.activemq.camel.component.ActiveMQComponent" -->
+	<!-- id="activemq"> -->
+	<!-- <property name="brokerURL" value="tcp://localhost:61616" /> -->
+	<!-- <property name="userName" value="admin" /> -->
+	<!-- <property name="password" value="admin" /> -->
+	<!-- </bean> -->
+	<camelContext id="_camelContext1" xmlns="http://camel.apache.org/schema/spring"
+		xmlns:s_dhl="http://www.dhl.com.co/DhlServices/" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+		xmlns:val="http://www.validartarjeta.com.co/ValidadorTarjeta/">
+		<route id="_route1" streamCache="true">
+			<from id="_from11"
+				uri="cxf:bean:servicioProveedoresOrdenes?dataFormat=MESSAGE" />
+			<removeHeaders id="_removeHeaders12" pattern="*" />
+			<choice id="_choice13">
+				<when id="_when131">
+					<xpath>//shipment/partner = 'RAPIDSERVICE'</xpath>
+					<to id="_to_xslt132" uri="xslt:/xslt/RapidConverter.xslt" />
+					<to id="_to133"
+						uri="cxf:bean:PProveedorRapidServices?dataFormat=PAYLOAD&amp;defaultOperationName=quoteProducts" />
+					<log id="_log133" message="log2 _route2 RAPIDSERVICE Paso  ${body}" />
+					<to id="_to134" uri="mock:end" />
+				</when>
+				<when id="_when141">
+					<xpath>//shipment/partner = 'SONNY'</xpath>
+					<to id="_to_xslt142" uri="xslt:/xslt/SonnyConverter.xslt" />
+					<to id="_to143"
+						uri="cxf:bean:ProveedorSonyService?dataFormat=PAYLOAD&amp;defaultOperationName=quoteProducts" />
+					<log id="log143" message="log2 _route2 SONNY Paso  ${body}" />
+					<to id="_to144" uri="mock:end" />
+				</when>
+			</choice>
+			<log id="_log15" message="log2 _route2 DHL Paso  ${body}" />
+			<to id="_to16" uri="mock:end" />
+		</route>
+		<route id="_route2" streamCache="true">
+			<from id="_from21" uri="cxf:bean:servicioEnvioOrdenes?dataFormat=MESSAGE" />
+			<removeHeaders id="_removeHeaders22" pattern="*" />
+			<choice id="_choice23">
+				<when id="_when231">
+					<xpath>//shipment/partner = 'DHL'</xpath>
+					<to id="_to_xslt2311" uri="xslt:/xslt/DHLConverter.xslt" />
+					<to id="_to2312"
+						uri="cxf:bean:ProveedorDHL?dataFormat=PAYLOAD&amp;defaultOperationName=fullfillShipment" />
+					<setHeader headerName="respuestaDHL" id="_setHeaderDhl">
+						<xpath resultType="java.lang.String">s_dhl:fullfillShipmentResponse/fullfillShipmentResult</xpath>
+					</setHeader>
+					<setHeader headerName="itemContenido" id="_setHeader2313">
+						<simple>resource:classpath:/wsdl/Response/EnviosRespose.xml</simple>
+					</setHeader>
+					<setBody id="_setBody2314">
+						<simple>${header.itemContenido.replaceAll("CAMBIAR", ${header.respuestaDHL})}</simple>
+					</setBody>
+					<to id="_to2315" uri="mock:end" />
+				</when>
+				<when id="_when232">
+					<xpath>//shipment/partner = 'SERVIENTREGA'</xpath>
+					<to id="_to_xslt2321" uri="xslt:/xslt/ServientregaConverter.xslt" />
+					<setHeader headerName="Content-Type" id="_setContentType">
+						<constant>application/json</constant>
+					</setHeader>
+					<to id="_to2324" uri="cxfrs:bean:rsServientrega?dataFormat=MESSAGE" />
+					<setHeader headerName="itemContenido" id="_setHeader2313">
+						<simple>resource:classpath:/wsdl/Response/EnviosRespose.xml</simple>
+					</setHeader>
+					<setBody id="_setBody2314">
+						<simple>${header.itemContenido.replaceAll("CAMBIAR",true)}</simple>
+					</setBody>
+					<log id="_log2323" message="log2 _route2 CONVERTER REST  ${body}" />
+					<to id="_to2322" uri="mock:end" />
+				</when>
+				<when id="_when233">
+					<xpath>//shipment/partner = 'DEPRISA'</xpath>
+					<to id="_to_xslt2331" uri="xslt:/xslt/ServientregaConverter.xslt" />
+					<to id="_to2322" uri="mock:end" />
+				</when>
+			</choice>
+			<log id="_log234" message="SALIDA PARA NETREGAR AL BPM  ${body}" />
+			<to id="_to235" uri="mock:end" />
+		</route>
+		<route id="_route3" streamCache="true">
+			<from id="_from31"
+				uri="cxf:bean:servicioVerificacionTarjeta?dataFormat=MESSAGE" />
+			<removeHeaders id="_removeHeaders32" pattern="*" />
+			<to id="_to_xslt33" uri="xslt:/xslt/TarjetaValidarConverter.xslt" />
+			<to id="_to34"
+				uri="cxf:bean:ProveedorValidacionTarjeta?dataFormat=PAYLOAD&amp;defaultOperationName=VerifyCC" />
+			<setHeader headerName="respuestaValidacionTarjeta" id="_setHeader35">
+				<xpath resultType="java.lang.String">val:CreditCardValidationResponse/valid</xpath>
+			</setHeader>
+			<setHeader headerName="itemContenido" id="_setHeader36">
+				<simple>resource:classpath:/wsdl/Response/TarjetaRespose.xml</simple>
+			</setHeader>
+			<setBody id="_setBody36">
+				<simple>${header.itemContenido.replaceAll("CAMBIAR", ${header.respuestaValidacionTarjeta})}</simple>
+			</setBody>
+			<log id="_log37" message="log2 _route2 PAYMENT Tarjeta Paso  ${body}" />
+			<to id="_to38" uri="mock:end" />
+		</route>
+		<route id="_route4" streamCache="true">
+			<from id="_from41" uri="cxf:bean:servicioPagosTarjeta?dataFormat=MESSAGE" />
+			<removeHeaders id="_removeHeaders42" pattern="*" />
+			<to id="_to_xslt43" uri="xslt:/xslt/TarjetaPagoConverter.xslt" />
+			<to id="_to44"
+				uri="cxf:bean:ProveedorValidacionTarjeta?dataFormat=PAYLOAD&amp;defaultOperationName=PaymentCC" />
+			<setHeader headerName="respuestaPagosTarjeta" id="_setHeader45">
+				<xpath resultType="java.lang.String">val:CreditCardPaymentResponse/valid</xpath>
+			</setHeader>
+			<setHeader headerName="itemContenido" id="_setHeader46">
+				<simple>resource:classpath:/wsdl/Response/TarjetaRespose.xml</simple>
+			</setHeader>
+			<setBody id="_setBody46">
+				<simple>${header.itemContenido.replaceAll("CAMBIAR", ${header.respuestaPagosTarjeta})}</simple>
+			</setBody>
+			<log id="_log47" message="log2 _route2 PAYMENT Tarjeta Paso  ${body}" />
+			<to id="_to48" uri="mock:end" />
+		</route>
+	</camelContext>
+</beans>
